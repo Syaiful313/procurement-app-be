@@ -45,6 +45,7 @@ model Procurement {
   username    String
   description String
   status      ProcurementStatus @default(WAITING_CONFIRMATION)
+  note        String?
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
