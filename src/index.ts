@@ -5,6 +5,7 @@ import sampleRouter from "./routes/sample.router";
 import cors from "cors";
 import authRouter from "./routes/auth.router";
 import dashboardUserRouter from "./routes/dashboard-user.router";
+import dashboardDiropsRouter from "./routes/dashboard-dirops.router";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use("/samples", sampleRouter);
 app.use("/auth", authRouter);
 app.use("/procurements", dashboardUserRouter);
+app.use("/dirops", dashboardDiropsRouter);
 
 app.use(errorMiddleware);
 
