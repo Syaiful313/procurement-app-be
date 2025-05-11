@@ -6,6 +6,7 @@ import cors from "cors";
 import authRouter from "./routes/auth.router";
 import dashboardUserRouter from "./routes/dashboard-user.router";
 import dashboardDiropsRouter from "./routes/dashboard-dirops.router";
+import dashboardProcurementRouter from "./routes/dashboard-procurement.router";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use("/samples", sampleRouter);
 app.use("/auth", authRouter);
 app.use("/procurements", dashboardUserRouter);
 app.use("/dirops", dashboardDiropsRouter);
+app.use("/notes", dashboardProcurementRouter);
 
 app.use(errorMiddleware);
 
