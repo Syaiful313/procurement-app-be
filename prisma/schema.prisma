@@ -42,6 +42,7 @@ model Procurement {
   id          Int               @id @default(autoincrement())
   userId      Int
   user        User              @relation(fields: [userId], references: [id])
+  username    String
   description String
   status      ProcurementStatus @default(WAITING_CONFIRMATION)
   createdAt   DateTime          @default(now())

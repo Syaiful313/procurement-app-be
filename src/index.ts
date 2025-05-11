@@ -4,6 +4,7 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import sampleRouter from "./routes/sample.router";
 import cors from "cors";
 import authRouter from "./routes/auth.router";
+import dashboardUserRouter from "./routes/dashboard-user.router";
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use("/samples", sampleRouter);
 app.use("/auth", authRouter);
+app.use("/procurements", dashboardUserRouter);
 
 app.use(errorMiddleware);
 
