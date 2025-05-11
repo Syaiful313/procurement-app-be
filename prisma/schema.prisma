@@ -15,3 +15,45 @@ model Sample {
 
   @@map("samples")
 }
+
+model User {
+  id           Int           @id @default(autoincrement())
+  nik          String        @unique
+  username     String        @unique
+  password     String
+  email        String        @unique
+  role         Role
+  deletedAt    DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  procurements Procurement[]
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  DIROPS
+  MANAGER
+  PROCUMENT
+}
+
+model Procurement {
+  id          Int               @id @default(autoincrement())
+  userId      Int
+  user        User              @relation(fields: [userId], references: [id])
+  description String
+  status      ProcurementStatus @default(WAITING_CONFIRMATION)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@map("procurements")
+}
+
+enum ProcurementStatus {
+  WAITING_CONFIRMATION
+  PRIORITAS
+  URGENT
+  COMPLEMENT
+  REJECTED
+}
