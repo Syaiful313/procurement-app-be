@@ -46,6 +46,8 @@ model Procurement {
   description String
   status      ProcurementStatus @default(WAITING_CONFIRMATION)
   note        String?
+  department  Department
+  date        DateTime
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
@@ -58,4 +60,10 @@ enum ProcurementStatus {
   URGENT
   COMPLEMENT
   REJECTED
+}
+
+enum Department {
+  PURCHASE
+  FACTORY
+  OFFICE
 }
