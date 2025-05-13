@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { updateProcurementNoteService } from "../services/dashboard-procurement/update-procurement-note.service";
 import { getUsersService } from "../services/dashboard-procurement/get-users.service";
 import { DeleteUserService } from "../services/dashboard-procurement/delete-user.service";
+import { updateTrackingStatusService } from "../services/dashboard-procurement/update-tracking-status.service";
 
 export const getUsersController = async (
   req: Request,
@@ -32,6 +33,21 @@ export const updateProcurementNoteController = async (
     const id = parseInt(req.params.id);
     const { note } = req.body;
     const result = await updateProcurementNoteService(id, note);
+    res.status(200).send(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateTrackingStatusController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const id = parseInt(req.params.id);
+    const { trackingStatus } = req.body;
+    const result = await updateTrackingStatusService(id, trackingStatus);
     res.status(200).send(result);
   } catch (error) {
     next(error);

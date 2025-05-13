@@ -2,8 +2,13 @@ import handlebars from "handlebars";
 import prisma from "../config/prisma";
 import { notificationProcurementTemplate } from "../templates/NotificationProcurement";
 import { statusUpdateTemplate } from "../templates/statusUpdateTemplate";
-import { translateDepartment, translateStatus } from "../utils/translation";
+import {
+  translateDepartment,
+  translateStatus,
+  translateTrackingStatus,
+} from "../utils/translation";
 import { transporter } from "./nodemailer";
+import { trackingUpdateTemplate } from "../templates/TrackingUpdateTemplate";
 
 export const sendProcurementNotificationEmail = async (data: {
   procurementId: number;
@@ -148,6 +153,68 @@ export const sendStatusUpdateEmail = async (data: {
       from: `"Sistem Pengadaan Barang" <${process.env.GMAIL_EMAIL}>`,
       to: procurementOwnerEmail,
       subject: `Update Status Pengadaan - ${itemName}`,
+      html,
+    };
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const sendTrackingUpdateEmail = async (data: {
+  procurementId: number;
+  procurementOwnerEmail: string;
+  procurementOwnerName: string;
+  itemName: string;
+  oldTrackingStatus: string;
+  newTrackingStatus: string;
+  department: string;
+  updatedBy: string;
+}) => {
+  const {
+    procurementId,
+    procurementOwnerEmail,
+    procurementOwnerName,
+    itemName,
+    oldTrackingStatus,
+    newTrackingStatus,
+    department,
+    updatedBy,
+  } = data;
+
+  try {
+    const template = handlebars.compile(trackingUpdateTemplate);
+
+    const oldTrackingStatusIndonesia =
+      translateTrackingStatus(oldTrackingStatus);
+    const newTrackingStatusIndonesia =
+      translateTrackingStatus(newTrackingStatus);
+    const departmentIndonesia = translateDepartment(department as any);
+
+    const updateDate = new Intl.DateTimeFormat("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    }).format(new Date());
+
+    const html = template({
+      recipientName: procurementOwnerName,
+      procurementId,
+      itemName,
+      oldTrackingStatus: oldTrackingStatusIndonesia,
+      newTrackingStatus: newTrackingStatusIndonesia,
+      department: departmentIndonesia,
+      updatedBy,
+      updateDate,
+    });
+
+    const mailOptions = {
+      from: `"Sistem Pengadaan Barang" <${process.env.GMAIL_EMAIL}>`,
+      to: procurementOwnerEmail,
+      subject: `Update Tracking Pengadaan - ${itemName}`,
       html,
     };
 

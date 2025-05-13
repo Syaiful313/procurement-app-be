@@ -15,6 +15,7 @@ export const getProcurementsController = async (
       sortBy: (req.query.sortBy as string) || "createdAt",
       sortOrder: (req.query.sortOrder as string) || "desc",
       status: (req.query.status as string) || "",
+      department: (req.query.department as string) || "",
     };
     const result = await getProcurementsService(query);
     res.status(200).send(result);
