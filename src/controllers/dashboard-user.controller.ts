@@ -14,7 +14,6 @@ export const getUserProcurementsController = async (
       take: parseInt(req.query.take as string) || 10,
       sortOrder: (req.query.sortOrder as string) || "desc",
       sortBy: (req.query.sortBy as string) || "createdAt",
-      search: (req.query.search as string) || "",
       status: (req.query.status as string) || "",
     };
 

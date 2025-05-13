@@ -4,7 +4,6 @@ import { PaginationQueryParams } from "../../types/pagination";
 import { ApiError } from "../../utils/api-error";
 
 interface GetUserProcurementsQueries extends PaginationQueryParams {
-  search?: string;
   status?: string;
 }
 
@@ -20,16 +19,12 @@ export const getUserProcurementsService = async (
     throw new ApiError(404, "User not found");
   }
 
-  const { page, take, sortBy, sortOrder, search, status } = queries;
+  const { page, take, sortBy, sortOrder, status } = queries;
 
   const whereClause: Prisma.ProcurementWhereInput = {
     userId,
   };
-
-  if (search) {
-    whereClause.description = { contains: search, mode: "insensitive" };
-  }
-
+  
   if (status) {
     whereClause.status = status as any;
   }
@@ -41,7 +36,6 @@ export const getUserProcurementsService = async (
     orderBy: {
       [sortBy]: sortOrder,
     },
-    
   });
 
   const count = await prisma.procurement.count({ where: whereClause });

@@ -1,19 +1,17 @@
+import cors from "cors";
 import express from "express";
 import { PORT } from "./config/env";
 import { errorMiddleware } from "./middlewares/error.middleware";
-import sampleRouter from "./routes/sample.router";
-import cors from "cors";
 import authRouter from "./routes/auth.router";
-import dashboardUserRouter from "./routes/dashboard-user.router";
 import dashboardDiropsRouter from "./routes/dashboard-dirops.router";
 import dashboardProcurementRouter from "./routes/dashboard-procurement.router";
+import dashboardUserRouter from "./routes/dashboard-user.router";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/samples", sampleRouter);
 app.use("/auth", authRouter);
 app.use("/procurements", dashboardUserRouter);
 app.use("/dirops", dashboardDiropsRouter);

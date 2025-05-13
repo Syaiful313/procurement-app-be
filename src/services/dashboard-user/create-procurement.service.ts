@@ -37,6 +37,7 @@ export const createProcurementService = async (
     }
 
     const validDepartments = ["PURCHASE", "FACTORY", "OFFICE"];
+    
     if (!validDepartments.includes(body.department)) {
       throw new ApiError(400, "Department tidak valid");
     }
