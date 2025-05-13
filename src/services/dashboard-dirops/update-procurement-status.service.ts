@@ -1,5 +1,6 @@
 import { ProcurementStatus } from "@prisma/client";
 import prisma from "../../config/prisma";
+import { ApiError } from "../../utils/api-error";
 
 export const updateProcurementStatusService = async (
   id: number,
@@ -11,7 +12,7 @@ export const updateProcurementStatusService = async (
     });
 
     if (!procurement) {
-      throw new Error(`Procurement dengan ID ${id} tidak ditemukan`);
+      throw new ApiError(404, `Procurement dengan ID ${id} tidak ditemukan`);
     }
 
     const updatedProcurement = await prisma.procurement.update({
@@ -24,7 +25,6 @@ export const updateProcurementStatusService = async (
 
     return updatedProcurement;
   } catch (error) {
-    console.error("Gagal mengubah status procurement:", error);
     throw error;
   }
 };

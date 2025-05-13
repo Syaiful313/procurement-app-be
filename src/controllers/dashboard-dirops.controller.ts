@@ -10,11 +10,10 @@ export const getProcurementsController = async (
 ) => {
   try {
     const query = {
-      take: parseInt(req.query.take as string) || 6,
       page: parseInt(req.query.page as string) || 1,
+      take: parseInt(req.query.take as string) || 10,
       sortBy: (req.query.sortBy as string) || "createdAt",
       sortOrder: (req.query.sortOrder as string) || "desc",
-      search: (req.query.search as string) || "",
       status: (req.query.status as string) || "",
     };
     const result = await getProcurementsService(query);
