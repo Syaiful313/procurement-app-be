@@ -30,17 +30,22 @@ enum Role {
 }
 
 model Procurement {
-  id          Int               @id @default(autoincrement())
-  userId      Int
-  user        User              @relation(fields: [userId], references: [id])
-  username    String
-  description String
-  status      ProcurementStatus @default(WAITING_CONFIRMATION)
-  note        String?
-  department  Department
-  date        DateTime
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id             Int               @id @default(autoincrement())
+  userId         Int
+  user           User              @relation(fields: [userId], references: [id])
+  username       String
+  description    String
+  status         ProcurementStatus @default(WAITING_CONFIRMATION)
+  note           String?
+  department     Department
+  date           DateTime
+  itemName       String
+  specification  String
+  quantity       Int
+  unit           String
+  trackingStatus TrackingStatus    @default(DRAFT)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
   @@map("procurements")
 }
@@ -57,4 +62,19 @@ enum Department {
   PURCHASE
   FACTORY
   OFFICE
+}
+
+enum TrackingStatus {
+  DRAFT
+  MEMO_DIAJUKAN_ADMIN_PR
+  APPROVAL_ATASAN_PERTAMA
+  APPROVAL_ATASAN_KEDUA
+  PENGADAAN_CARI_HARGA
+  APPROVAL_MANAGER_KANTOR
+  APPROVAL_DIROPS
+  PENCETAKAN_PO
+  PO_DIKIRIM_KE_VENDOR
+  VENDOR_PROSES_PENGIRIMAN
+  BARANG_DIKIRIM_VENDOR
+  BARANG_DI_GUDANG
 }
