@@ -95,6 +95,30 @@ export const statusUpdateTemplate = `
       border-radius: 5px;
       margin-top: 15px;
     }
+    .items-list {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .description {
+      white-space: pre-line;
+    }
   </style>
 </head>
 <body>
@@ -107,12 +131,6 @@ export const statusUpdateTemplate = `
       <p>Halo {{recipientName}},</p>
       
       <p>Status pengadaan barang anda telah diperbarui:</p>
-      
-      <div class="info-row">
-        <span class="label">Nama Barang</span>
-        <span class="colon">:</span>
-        <span class="value">{{itemName}}</span>
-      </div>
       
       <div class="info-row">
         <span class="label">Departemen</span>
@@ -137,6 +155,32 @@ export const statusUpdateTemplate = `
         <span class="colon">:</span>
         <span class="value">{{updateDate}}</span>
       </div>
+      
+      <div class="items-list">
+      <h3>Daftar Barang :</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Nama Item</th>
+            <th>Spesifikasi</th>
+            <th>Jumlah</th>
+            <th>Satuan</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items}}
+          <tr>
+            <td>{{number}}</td>
+            <td>{{itemName}}</td>
+            <td>{{specification}}</td>
+            <td>{{quantity}}</td>
+            <td>{{unit}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
       
       {{#if note}}
       <div class="note-box">

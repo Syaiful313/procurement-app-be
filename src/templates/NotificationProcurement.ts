@@ -66,6 +66,31 @@ export const notificationProcurementTemplate = `
       border-radius: 5px;
       margin-top: 15px;
     }
+    .items-list {
+      margin-top: 20px;
+      border-top: 1px solid #e0e0e0;
+      padding-top: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .item-content {
+      white-space: pre-line;
+    }
   </style>
 </head>
 <body>
@@ -82,7 +107,7 @@ export const notificationProcurementTemplate = `
       <div class="info-row">
         <span class="label">Diajukan oleh</span>
         <span class="colon">:</span>
-        <span class="value">{{username}}</span>
+        <span class="value">{{createdBy}}</span>
       </div>
       
       <div class="info-row">
@@ -96,35 +121,21 @@ export const notificationProcurementTemplate = `
         <span class="colon">:</span>
         <span class="value">{{department}}</span>
       </div>
-          
-      <div class="info-row">
-        <span class="label">Nama Barang</span>
-        <span class="colon">:</span>
-        <span class="value">{{itemName}}</span>
-      </div>
       
-      <div class="info-row">
-        <span class="label">Spesifikasi</span>
-        <span class="colon">:</span>
-        <span class="value">{{specification}}</span>
-      </div>
-      
-      <div class="info-row">
-        <span class="label">Jumlah</span>
-        <span class="colon">:</span>
-        <span class="value">{{quantity}}</span>
-      </div>
-
-      <div class="info-row">
-        <span class="label">Satuan</span>
-        <span class="colon">:</span>
-        <span class="value">{{unit}}</span>
-      </div>
-      
-      <div class="info-row">
-        <span class="label">Keterangan</span>
-        <span class="colon">:</span>
-        <span class="value">{{description}}</span>
+      <div class="items-list">
+        <h3>Daftar Item :</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Daftar Item</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="item-content">{{description}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     

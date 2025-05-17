@@ -13,16 +13,23 @@ export const loginService = async (body: Body) => {
     const user = await prisma.user.findFirst({
       where: {
         nik,
+        deletedAt: null,
       },
     });
 
     if (!user) {
-      throw new ApiError(404, "User not found");
+      throw new ApiError(404, "User not found or has been deactivated");
+    }
+
+    if (user.password !== password) {
+      throw new ApiError(401, "Invalid credentials");
     }
 
     const { password: pw, ...userWithoutPassword } = user;
-    
-    const token = sign({ id: user.id }, JWT_SECRET_KEY!, { expiresIn: "2h" });
+
+    const token = sign({ id: user.id, role: user.role }, JWT_SECRET_KEY!, {
+      expiresIn: "2h",
+    });
 
     return {
       ...userWithoutPassword,

@@ -14,7 +14,6 @@ export const sendProcurementNotificationEmail = async (data: {
   procurementId: number;
   username: string;
   description: string;
-  status: string;
   department: string;
   date: Date;
   itemName: string;
@@ -27,7 +26,6 @@ export const sendProcurementNotificationEmail = async (data: {
     procurementId,
     username,
     description,
-    status,
     department,
     date,
     itemName,
@@ -65,7 +63,6 @@ export const sendProcurementNotificationEmail = async (data: {
     }).format(date);
 
     const departmentIndonesia = translateDepartment(department as any);
-    const statusIndonesia = translateStatus(status);
 
     const emailPromises = procurementUsers.map(async (procurementUser) => {
       const html = template({
@@ -73,7 +70,6 @@ export const sendProcurementNotificationEmail = async (data: {
         procurementId,
         username,
         description,
-        status: statusIndonesia,
         department: departmentIndonesia,
         date: formattedDate,
         itemName,
@@ -86,7 +82,7 @@ export const sendProcurementNotificationEmail = async (data: {
       const mailOptions = {
         from: `"Sistem Pengadaan Barang" <${process.env.GMAIL_EMAIL}>`,
         to: procurementUser.email,
-        subject: `Pengajuan Barang Baru - ${itemName}`,
+        subject: `Pengajuan Barang Baru - Departemen ${departmentIndonesia}`,
         html,
       };
 
@@ -107,7 +103,7 @@ export const sendStatusUpdateEmail = async (data: {
   procurementId: number;
   procurementOwnerEmail: string;
   procurementOwnerName: string;
-  itemName: string;
+  items: any[]; // Array item lengkap
   newStatus: string;
   department: string;
   updatedBy: string;
@@ -117,7 +113,7 @@ export const sendStatusUpdateEmail = async (data: {
     procurementId,
     procurementOwnerEmail,
     procurementOwnerName,
-    itemName,
+    items,
     newStatus,
     department,
     updatedBy,
@@ -134,14 +130,18 @@ export const sendStatusUpdateEmail = async (data: {
       day: "numeric",
       month: "long",
       year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
     }).format(new Date());
+
+    // Tambahkan nomor urut ke setiap item
+    const itemsWithNumber = items.map((item, index) => ({
+      ...item,
+      number: index + 1
+    }));
 
     const html = template({
       recipientName: procurementOwnerName,
       procurementId,
-      itemName,
+      items: itemsWithNumber, // Kirim items dengan nomor
       newStatus: newStatusIndonesia,
       department: departmentIndonesia,
       updatedBy,
@@ -152,7 +152,7 @@ export const sendStatusUpdateEmail = async (data: {
     const mailOptions = {
       from: `"Sistem Pengadaan Barang" <${process.env.GMAIL_EMAIL}>`,
       to: procurementOwnerEmail,
-      subject: `Update Status Pengadaan - ${itemName}`,
+      subject: `Update Status Pengadaan - Departemen ${departmentIndonesia}`,
       html,
     };
 
@@ -166,7 +166,7 @@ export const sendTrackingUpdateEmail = async (data: {
   procurementId: number;
   procurementOwnerEmail: string;
   procurementOwnerName: string;
-  itemName: string;
+  items: any[]; // Ubah menjadi array items
   oldTrackingStatus: string;
   newTrackingStatus: string;
   department: string;
@@ -176,7 +176,7 @@ export const sendTrackingUpdateEmail = async (data: {
     procurementId,
     procurementOwnerEmail,
     procurementOwnerName,
-    itemName,
+    items,
     oldTrackingStatus,
     newTrackingStatus,
     department,
@@ -196,14 +196,18 @@ export const sendTrackingUpdateEmail = async (data: {
       day: "numeric",
       month: "long",
       year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
     }).format(new Date());
+
+    // Tambahkan nomor urut ke setiap item
+    const itemsWithNumber = items.map((item, index) => ({
+      ...item,
+      number: index + 1
+    }));
 
     const html = template({
       recipientName: procurementOwnerName,
       procurementId,
-      itemName,
+      items: itemsWithNumber, // Kirim items dengan nomor
       oldTrackingStatus: oldTrackingStatusIndonesia,
       newTrackingStatus: newTrackingStatusIndonesia,
       department: departmentIndonesia,
@@ -214,7 +218,7 @@ export const sendTrackingUpdateEmail = async (data: {
     const mailOptions = {
       from: `"Sistem Pengadaan Barang" <${process.env.GMAIL_EMAIL}>`,
       to: procurementOwnerEmail,
-      subject: `Update Tracking Pengadaan - ${itemName}`,
+      subject: `Update Tracking Pengadaan - Departemen ${departmentIndonesia}`,
       html,
     };
 

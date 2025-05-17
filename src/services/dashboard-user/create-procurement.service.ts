@@ -3,16 +3,19 @@ import { sendProcurementNotificationEmail } from "../../lib/handlebars";
 import { ApiError } from "../../utils/api-error";
 import { Department } from "@prisma/client";
 
-interface ProcurementBody {
-  username: string;
-  description: string;
-  date: Date;
-  department: Department;
+interface ProcurementItemInput {
   itemName: string;
   specification: string;
   quantity: number;
   unit: string;
-  
+  description: string;
+}
+
+interface ProcurementBody {
+  username: string;
+  date: Date;
+  department: Department;
+  items: ProcurementItemInput[];
 }
 
 export const createProcurementService = async (
@@ -34,12 +37,12 @@ export const createProcurementService = async (
       throw new ApiError(400, "Username tidak boleh kosong");
     }
 
-    if (!body.description) {
-      throw new ApiError(400, "Deskripsi tidak boleh kosong");
-    }
-
     if (!body.department) {
       throw new ApiError(400, "Department tidak boleh kosong");
+    }
+
+    if (!body.items || body.items.length === 0) {
+      throw new ApiError(400, "Minimal harus ada satu item procurement");
     }
 
     const validDepartments = ["PURCHASE", "FACTORY", "OFFICE"];
@@ -48,33 +51,67 @@ export const createProcurementService = async (
       throw new ApiError(400, "Department tidak valid");
     }
 
+    for (const item of body.items) {
+      if (!item.itemName) {
+        throw new ApiError(400, "Nama item tidak boleh kosong");
+      }
+      if (!item.specification) {
+        throw new ApiError(400, "Spesifikasi tidak boleh kosong");
+      }
+      if (!item.quantity || item.quantity <= 0) {
+        throw new ApiError(400, "Quantity harus lebih dari 0");
+      }
+      if (!item.unit) {
+        throw new ApiError(400, "Unit tidak boleh kosong");
+      }
+      if (!item.description) {
+        throw new ApiError(400, "Description item tidak boleh kosong");
+      }
+    }
+
     const result = await prisma.procurement.create({
       data: {
         userId: user.id,
         username: body.username,
-        description: body.description,
         date: body.date,
         department: body.department,
-        itemName: body.itemName,
-        specification: body.specification,
-        quantity: body.quantity,
-        unit: body.unit,
         status: "WAITING_CONFIRMATION",
+        procurementItems: {
+          create: body.items.map((item) => ({
+            itemName: item.itemName,
+            specification: item.specification,
+            quantity: item.quantity,
+            unit: item.unit,
+            description: item.description,
+          })),
+        },
+      },
+      include: {
+        procurementItems: true,
       },
     });
 
     try {
+      const itemsDescription = result.procurementItems
+        .map(
+          (item, index) =>
+            `No. ${index + 1}: ${item.itemName} - ${item.specification} (${
+              item.quantity
+            } ${item.unit})\nKeterangan: ${item.description}`
+        )
+        .join("\n\n");
+
+      const firstItem = result.procurementItems[0];
       await sendProcurementNotificationEmail({
         procurementId: result.id,
         username: result.username,
-        description: result.description,
-        status: result.status,
+        description: `${itemsDescription}`,
         department: result.department,
         date: result.date,
-        itemName: result.itemName,
-        specification: result.specification,
-        quantity: result.quantity,
-        unit: result.unit,
+        itemName: firstItem.itemName,
+        specification: firstItem.specification,
+        quantity: firstItem.quantity,
+        unit: firstItem.unit,
         createdBy: user.username,
       });
     } catch (emailError) {

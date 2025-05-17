@@ -12,11 +12,14 @@ export const getUserProcurementsService = async (
   queries: GetUserProcurementsQueries
 ) => {
   const user = await prisma.user.findFirst({
-    where: { id: userId, deletedAt: null },
+    where: {
+      id: userId,
+      deletedAt: null,
+    },
   });
 
   if (!user) {
-    throw new ApiError(404, "User not found");
+    throw new ApiError(404, "User not found or has been deactivated");
   }
 
   const { page, take, sortBy, sortOrder, status } = queries;
@@ -24,7 +27,7 @@ export const getUserProcurementsService = async (
   const whereClause: Prisma.ProcurementWhereInput = {
     userId,
   };
-  
+
   if (status) {
     whereClause.status = status as any;
   }

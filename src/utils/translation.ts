@@ -13,7 +13,7 @@ export const translateDepartment = (department: Department): string => {
 const statusTranslations = {
   WAITING_CONFIRMATION: "Menunggu Konfirmasi",
   PRIORITAS: "Prioritas",
-  URGENT: "Urgent",
+  URGENT: "Mendesak",
   COMPLEMENT: "Pelengkap",
   REJECTED: "Ditolak",
 };

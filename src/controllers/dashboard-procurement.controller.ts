@@ -3,6 +3,7 @@ import { updateProcurementNoteService } from "../services/dashboard-procurement/
 import { getUsersService } from "../services/dashboard-procurement/get-users.service";
 import { DeleteUserService } from "../services/dashboard-procurement/delete-user.service";
 import { updateTrackingStatusService } from "../services/dashboard-procurement/update-tracking-status.service";
+import { ApiError } from "../utils/api-error";
 
 export const getUsersController = async (
   req: Request,
@@ -61,7 +62,18 @@ export const DeleteUserController = async (
 ) => {
   try {
     const userId = parseInt(req.params.id);
-    const result = await DeleteUserService(userId);
+    const currentUserId = res.locals.userId;
+    const currentUserRole = res.locals.userRole;
+
+    if (!currentUserId || !currentUserRole) {
+      throw new ApiError(401, "Unauthorized - User not authenticated");
+    }
+
+    const result = await DeleteUserService(
+      userId,
+      currentUserId,
+      currentUserRole
+    );
     res.status(200).send(result);
   } catch (error) {
     next(error);

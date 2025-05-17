@@ -12,6 +12,7 @@ export const updateTrackingStatusService = async (
       where: { id },
       include: {
         user: true,
+        procurementItems: true,
       },
     });
 
@@ -35,7 +36,7 @@ export const updateTrackingStatusService = async (
           procurementId: procurement.id,
           procurementOwnerEmail: procurement.user.email,
           procurementOwnerName: procurement.user.username,
-          itemName: procurement.itemName,
+          items: procurement.procurementItems, // Kirim seluruh array items
           oldTrackingStatus: oldTrackingStatus,
           newTrackingStatus: trackingStatus,
           department: procurement.department,
