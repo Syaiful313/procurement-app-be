@@ -10,16 +10,20 @@ datasource db {
 
 model User {
   id           Int           @id @default(autoincrement())
-  nik          String        @unique
-  username     String        @unique
+  nik          String
+  username     String
   password     String
-  email        String        @unique
+  email        String
   role         Role
   deletedAt    DateTime?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   procurements Procurement[]
 
+  @@unique([nik, deletedAt])
+  @@unique([username, deletedAt])
+  @@unique([email, deletedAt])
+  
   @@map("users")
 }
 
@@ -35,20 +39,32 @@ model Procurement {
   userId         Int
   user           User              @relation(fields: [userId], references: [id])
   username       String
-  description    String
   status         ProcurementStatus @default(WAITING_CONFIRMATION)
   note           String?
   department     Department
   date           DateTime
-  itemName       String
-  specification  String
-  quantity       Int
-  unit           String
   trackingStatus TrackingStatus    @default(DRAFT)
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
+  procurementItems ProcurementItem[]
+
   @@map("procurements")
+}
+
+model ProcurementItem {
+  id            Int         @id @default(autoincrement())
+  procurementId Int
+  procurement   Procurement @relation(fields: [procurementId], references: [id], onDelete: Cascade)
+  itemName      String
+  specification String
+  quantity      Int
+  unit          String
+  description   String      
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("procurement_items")
 }
 
 enum ProcurementStatus {

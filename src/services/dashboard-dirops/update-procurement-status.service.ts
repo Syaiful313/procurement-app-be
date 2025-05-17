@@ -12,6 +12,7 @@ export const updateProcurementStatusService = async (
       where: { id },
       include: {
         user: true,
+        procurementItems: true,
       },
     });
 
@@ -35,7 +36,7 @@ export const updateProcurementStatusService = async (
           procurementId: procurement.id,
           procurementOwnerEmail: procurement.user.email,
           procurementOwnerName: procurement.user.username,
-          itemName: procurement.itemName,
+          items: procurement.procurementItems,
           newStatus: status,
           department: procurement.department,
           updatedBy: "Admin Procurement",

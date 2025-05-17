@@ -5,10 +5,19 @@ import prisma from "../../config/prisma";
 interface GetProcurementsQuery extends PaginationQueryParams {
   status?: string;
   department?: string;
+  includeDeletedUsers?: boolean;
 }
 
 export const getProcurementsService = async (query: GetProcurementsQuery) => {
-  const { page, sortBy, sortOrder, take, status , department } = query;
+  const {
+    page,
+    sortBy,
+    sortOrder,
+    take,
+    status,
+    department,
+    includeDeletedUsers = false,
+  } = query;
 
   const whereClause: Prisma.ProcurementWhereInput = {};
 
@@ -19,8 +28,25 @@ export const getProcurementsService = async (query: GetProcurementsQuery) => {
     whereClause.department = department as any;
   }
 
+  if (!includeDeletedUsers) {
+    whereClause.user = {
+      deletedAt: null,
+    };
+  }
+
   const procurements = await prisma.procurement.findMany({
     where: whereClause,
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          role: true,
+          deletedAt: true,
+        },
+      },
+    },
     skip: (page - 1) * take,
     take: take,
     orderBy: {
