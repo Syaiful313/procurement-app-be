@@ -20,8 +20,6 @@ export const updateProcurementStatusService = async (
       throw new ApiError(404, `Procurement dengan ID ${id} tidak ditemukan`);
     }
 
-    const oldStatus = procurement.status;
-
     const updatedProcurement = await prisma.procurement.update({
       where: { id },
       data: {
@@ -30,7 +28,7 @@ export const updateProcurementStatusService = async (
       },
     });
 
-    if (oldStatus !== status) {
+    if (status === ProcurementStatus.REJECTED) {
       try {
         await sendStatusUpdateEmail({
           procurementId: procurement.id,

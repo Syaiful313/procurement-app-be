@@ -20,8 +20,6 @@ export const updateTrackingStatusService = async (
       throw new ApiError(404, `Procurement dengan ID ${id} tidak ditemukan`);
     }
 
-    const oldTrackingStatus = procurement.trackingStatus;
-
     const updatedProcurement = await prisma.procurement.update({
       where: { id },
       data: {
@@ -30,14 +28,14 @@ export const updateTrackingStatusService = async (
       },
     });
 
-    if (oldTrackingStatus !== trackingStatus) {
+    if (trackingStatus === TrackingStatus.BARANG_DI_GUDANG) {
       try {
         await sendTrackingUpdateEmail({
           procurementId: procurement.id,
           procurementOwnerEmail: procurement.user.email,
           procurementOwnerName: procurement.user.username,
-          items: procurement.procurementItems, // Kirim seluruh array items
-          oldTrackingStatus: oldTrackingStatus,
+          items: procurement.procurementItems,
+          oldTrackingStatus: procurement.trackingStatus,
           newTrackingStatus: trackingStatus,
           department: procurement.department,
           updatedBy: "Admin Procurement",

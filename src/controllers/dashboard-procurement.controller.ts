@@ -1,7 +1,8 @@
-import { Request, Response, NextFunction } from "express";
-import { updateProcurementNoteService } from "../services/dashboard-procurement/update-procurement-note.service";
-import { getUsersService } from "../services/dashboard-procurement/get-users.service";
+import { NextFunction, Request, Response } from "express";
+import { DeleteProcurementService } from "../services/dashboard-procurement/delete-procurement-service.service";
 import { DeleteUserService } from "../services/dashboard-procurement/delete-user.service";
+import { getUsersService } from "../services/dashboard-procurement/get-users.service";
+import { updateProcurementNoteService } from "../services/dashboard-procurement/update-procurement-note.service";
 import { updateTrackingStatusService } from "../services/dashboard-procurement/update-tracking-status.service";
 import { ApiError } from "../utils/api-error";
 
@@ -74,6 +75,36 @@ export const DeleteUserController = async (
       currentUserId,
       currentUserRole
     );
+    res.status(200).send(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const DeleteProcurementController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const procurementId = parseInt(req.params.id);
+    const currentUserId = res.locals.userId;
+    const currentUserRole = res.locals.userRole;
+
+    if (!currentUserId || !currentUserRole) {
+      throw new ApiError(401, "Unauthorized");
+    }
+
+    if (isNaN(procurementId)) {
+      throw new ApiError(400, "Invalid procurement ID");
+    }
+
+    const result = await DeleteProcurementService(
+      procurementId,
+      currentUserId,
+      currentUserRole
+    );
+    
     res.status(200).send(result);
   } catch (error) {
     next(error);
