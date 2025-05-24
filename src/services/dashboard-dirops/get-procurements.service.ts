@@ -19,7 +19,9 @@ export const getProcurementsService = async (query: GetProcurementsQuery) => {
     includeDeletedUsers = false,
   } = query;
 
-  const whereClause: Prisma.ProcurementWhereInput = {};
+  const whereClause: Prisma.ProcurementWhereInput = {
+    deletedAt: null,
+  };
 
   if (status) {
     whereClause.status = status as any;

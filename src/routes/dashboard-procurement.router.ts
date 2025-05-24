@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  DeleteProcurementController,
   DeleteUserController,
   getUsersController,
   updateProcurementNoteController,
@@ -14,5 +15,11 @@ router.get("/users", getUsersController);
 router.patch("/:id", updateProcurementNoteController);
 router.patch("/tracking-status/:id", updateTrackingStatusController);
 router.delete("/:id", verifyToken, setUserData, DeleteUserController);
+router.delete(
+  "/procurement/:id",
+  verifyToken,
+  setUserData,
+  DeleteProcurementController
+);
 
 export default router;

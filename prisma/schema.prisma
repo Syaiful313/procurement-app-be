@@ -44,6 +44,7 @@ model Procurement {
   department     Department
   date           DateTime
   trackingStatus TrackingStatus    @default(DRAFT)
+  deletedAt      DateTime?
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
